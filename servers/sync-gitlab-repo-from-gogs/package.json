@@ -1,0 +1,16 @@
+{
+  "name": "micros",
+  "version": "0.0.1",
+  "description": "some micro servers",
+  "main": "index.js",
+  "repository": "https://github.com/yuler/micros.git",
+  "author": "yuler <joyful4yu@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "micro": "^9.3.2",
+    "node-fetch": "^2.2.0"
+  },
+  "scripts": {
+    "start": "micro"
+  }
+}

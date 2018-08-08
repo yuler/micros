@@ -1,0 +1,11 @@
+jobs:
+  build:
+    machine: true
+    environment:
+      SERVER: sync-gitlab-repo-from-gogs
+    steps:
+      - checkout
+      - run: cd servers/$SERVER
+      - run: docker build -t $SERVER .
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker push $DOCKER_USER/$SERVER
