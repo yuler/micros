@@ -1,11 +1,16 @@
+version: 2
 jobs:
   build:
     machine: true
     environment:
       SERVER: sync-gitlab-repo-from-gogs
+      VERSION:
     steps:
       - checkout
-      - run: cd servers/$SERVER
-      - run: docker build -t $SERVER .
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker push $DOCKER_USER/$SERVER
+      - run:
+          name: Docker build and push
+          command: |
+            cd servers/$SERVER
+            docker build -t $DOCKER_USER/$SERVER .
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push $DOCKER_USER/$SERVER:latest
