@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
   if (/^\d+$/.test(project)) {
     id = project
   } else {
-    id = PROJECT_MAP[project]
+    id = JSON.parse(PROJECT_MAP)[project]
   }
 
   // fetch api
