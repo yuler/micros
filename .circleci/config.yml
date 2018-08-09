@@ -1,16 +1,28 @@
 version: 2
+
+default:
+  machine: true
+  steps:
+    - checkout
+    - run:
+        name: Docker build and push
+        command: |
+          cd servers/$SERVER
+          docker build -t $DOCKER_USER/$SERVER .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push $DOCKER_USER/$SERVER:latest
+
 jobs:
-  build:
-    machine: true
+  build sycn repo:
+    <<: *default
     environment:
       SERVER: sync-gitlab-repo-from-gogs
       VERSION:
-    steps:
-      - checkout
-      - run:
-          name: Docker build and push
-          command: |
-            cd servers/$SERVER
-            docker build -t $DOCKER_USER/$SERVER .
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push $DOCKER_USER/$SERVER:latest
+
+
+  build slack command:
+    <<: *default
+    environment:
+      SERVER: sync-gitlab-repo-from-gogs
+      VERSION:
+
