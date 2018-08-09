@@ -23,12 +23,12 @@ module.exports = async (req, res) => {
   }
 
   // /:id get id
-  const mather = /^\/(\d+)/.exec(req.url)
+  const matcher = /^\/(\d+)/.exec(req.url)
   if (!matcher) {
     return send(res, 422, 'Unprocessable Entity')
   }
 
-  const id = matcher[id]
+  const id = matcher[1]
   const headers = { 'Private-Token': GITLAB_TOKEN }
   const response = await fetch(`https://gitlab.com/api/v4/projects/${id}/mirror/pull`, {
     method: 'POST',
