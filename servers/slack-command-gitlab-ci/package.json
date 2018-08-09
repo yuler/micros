@@ -1,0 +1,12 @@
+{
+  "name": "slack-command-gitlab-ci",
+  "version": "0.0.1",
+  "description": "slack command gitlab-ci",
+  "main": "index.js",
+  "author": "joyful4yu@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "micro": "^9.3.2",
+    "node-fetch": "^2.2.0"
+  }
+}
