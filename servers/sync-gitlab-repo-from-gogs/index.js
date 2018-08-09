@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
 
   const id = matcher[id]
   const headers = { 'Private-Token': GITLAB_TOKEN }
-  const response = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/mirror/pull`, {
+  const response = await fetch(`https://gitlab.com/api/v4/projects/${id}/mirror/pull`, {
     method: 'POST',
     headers
   })
