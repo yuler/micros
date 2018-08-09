@@ -1,6 +1,6 @@
 version: 2
 
-default:
+defaults: &defaults
   machine: true
   steps:
     - checkout
@@ -13,16 +13,21 @@ default:
           docker push $DOCKER_USER/$SERVER:latest
 
 jobs:
-  build sycn repo:
-    <<: *default
+  build-sycn-repo:
+    <<: *defaults
     environment:
       SERVER: sync-gitlab-repo-from-gogs
-      VERSION:
+      # VERSION:
 
-
-  build slack command:
-    <<: *default
+  build-slack-command:
+    <<: *defaults
     environment:
-      SERVER: sync-gitlab-repo-from-gogs
-      VERSION:
+      SERVER: slack-command-gitlab-ci
+      # VERSION:
 
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-sycn-repo
+      - build-slack-command
