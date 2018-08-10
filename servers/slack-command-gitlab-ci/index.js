@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
   const args = argsString.split(' ')
 
   if (command !== '/gitlab-ci') return send(res, 500, 'Error')
-  if (/help/gi.test(argsString) || args.length !== 3) return send(res, 500, help)
+  if (/help/gi.test(argsString) || args.length !== 3) return send(res, 200, help)
 
   const [project, ref, environment] = args
   let id
@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
       'Private-Token': GITLAB_TOKEN,
     }
   })
-  return await response.json()
+  return wrapResponse(`${command} ${argsString}`, await response.json())
 }
 
 const help =`
@@ -56,3 +56,16 @@ const help =`
 
     gitlab-ci [project name or alias] <ref> <env>          create pipline
   `
+
+function wrapResponse (string, json) {
+  const keys = Object.keys(json)
+  const attachments = keys.map(key => {
+    const value = json[key]
+    return { text: `${key} : ${value}`}
+  })
+  return {
+    // "response_type": "in_channel",
+    text: string,
+    attachments
+  }
+}
