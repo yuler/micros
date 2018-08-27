@@ -57,15 +57,18 @@ const help =`
     gitlab-ci [project name or alias] <ref> <env>          create pipline
   `
 
-function wrapResponse (string, json) {
-  const keys = Object.keys(json)
-  const attachments = keys.map(key => {
-    const value = json[key]
-    return { text: `${key} : ${value}`}
-  })
+function wrapResponse (command, json) {
+  console.log(json)
+  // const keys = Object.keys(json)
+  // const attachments = keys.map(key => {
+  //   const value = json[key]
+  //   return { text: `${key} : ${value}`}
+  // })
   return {
     // "response_type": "in_channel",
-    text: string,
-    attachments
+    text: command,
+    attachments: [{
+      text: JSON.stringify(json)
+    }]
   }
 }
