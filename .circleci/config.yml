@@ -2,6 +2,10 @@ version: 2
 
 defaults: &defaults
   machine: true
+  branches:
+    only:
+      - master
+      - dev
   steps:
     - checkout
     - run:
