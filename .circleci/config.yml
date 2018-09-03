@@ -8,15 +8,11 @@ defaults: &defaults
         name: Docker build and push
         command: |
           cd servers/$SERVER
-          VERSION=$(cat package.json \
-            | grep version \
-            | head -1 \
-            | awk -F: '{ print $2 }' \
-            | sed 's/[",]//g')
-          echo $VERSION
-          docker build -t $DOCKER_USER/$SERVER .
-          docker login -u $DOCKER_USER --password-stdin $DOCKER_PASSWORD
-          # docker push $DOCKER_USER/$SERVER:$VERSION
+          VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+          docker build -t $DOCKER_USER/$SERVER:$VERSION .
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          docker push $DOCKER_USER/$SERVER:$VERSION
+          docker tag $DOCKER_USER/$SERVER:$VERSION $DOCKER_USER/$SERVER:latest
           docker push $DOCKER_USER/$SERVER:latest
 
 jobs:
