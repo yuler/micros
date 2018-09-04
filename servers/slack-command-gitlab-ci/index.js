@@ -64,18 +64,22 @@ function gitlabCommand(projectName, args, response_url) {
       'Private-Token': GITLAB_TOKEN,
     }
   })
-    .then(response => {
-      const res = response.json()
+    .then(async response => {
+      const res = await response.json()
+      console.dir(res)
+
+      if (!res.web_url) return handlerError(res.message)
+
       fetch(response_url, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
         },
         body: JSON.stringify({
-          color: '#008000',
           response_type: 'in_channel',
           text: 'GitLab pipline create success.',
           attachments: [{
+            color: '#008000',
             title: 'GitLab pipline link',
             title_link: res.web_url,
             text: 'Sending delayed responses'
@@ -83,22 +87,27 @@ function gitlabCommand(projectName, args, response_url) {
         })
       })
     .catch(error => {
-      fetch(response_url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          color: '#F00',
-          response_type: 'in_channel',
-          text: 'GitLab pipline create Fail.',
-          attachments: [{
-            text: JSON.stringify(error)
-          }]
-        })
-      })
+      handlerError(error)
     })
   })
 
   return 'Received the command, please wait the api callback.'
+
+  function handlerError(error) {
+    fetch(response_url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        response_type: 'in_channel',
+        text: 'GitLab pipline create Fail.',
+        attachments: [{
+          color: '#F00',
+          text: JSON.stringify(error)
+        }]
+      })
+    })
+  }
 }
+
