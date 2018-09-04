@@ -87,9 +87,8 @@ function gitlabCommand(projectName, command, args, response_url) {
           text: 'GitLab pipline create success.',
           attachments: [{
             color: '#008000',
-            title: 'GitLab pipline link',
+            title: 'Pipline link',
             title_link: res.web_url,
-            text: 'Sending delayed responses'
           }]
         })
       })
@@ -98,7 +97,16 @@ function gitlabCommand(projectName, command, args, response_url) {
     })
   })
 
-  return 'Received the command, please wait the api callback.'
+  return {
+    response_type: 'in_channel',
+    text: 'Received the command, please wait the api callback.',
+    fields: [
+      {
+        title: 'Commnad',
+        value: `gitlab-ci ${command} ${args.join(' ')}`
+      }
+    ]
+  }
 
   function handlerError(error) {
     fetch(response_url, {
@@ -111,7 +119,7 @@ function gitlabCommand(projectName, command, args, response_url) {
         text: 'GitLab pipline create fail.',
         attachments: [{
           color: '#F00',
-          text: JSON.stringify(error)
+          text: JSON.stringify(error),
         }]
       })
     })
