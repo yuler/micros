@@ -1,6 +1,6 @@
 {
   "name": "micros",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "some micro servers",
   "main": "index.js",
   "repository": "https://github.com/yuler/micros.git",

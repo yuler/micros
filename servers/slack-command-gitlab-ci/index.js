@@ -26,49 +26,77 @@ module.exports = async (req, res) => {
   // handler slack command
   // https://api.slack.com/slash-commands#app_command_handling
   const params = querystring.parse(data)
-  const { command, text: argsString } = params
+  const { channel_name: projectName, command, text: argsString, response_url } = params
   const args = argsString.split(' ')
 
-  if (command !== '/gitlab-ci') return send(res, 500, 'Error')
-  if (/help/gi.test(argsString) || args.length !== 3) return send(res, 200, help)
-
-  const [project, ref, environment] = args
-  let id
-  if (/^\d+$/.test(project)) {
-    id = project
-  } else {
-    id = JSON.parse(PROJECT_MAP)[project]
+  switch (command) {
+    case '/gitlab-ci':
+      return gitlabCommand(projectName, args, response_url)
   }
 
-  // fetch api
+  return help
+}
+
+const help = `
+  Usage: gitlab-ci <command>
+
+  Commnads:
+
+    create <ref> <env> [desciption]   create gitlab ci pipline from the channel as project name
+
+`
+
+function gitlabCommand(projectName, args, response_url) {
+  // if args is empty
+  if (args.length < 2 || args.includes('help') || args.includes('-h')) {
+    return help
+  }
+
+  const [ ref, env, description = '' ] = args
+  // get projectId
+  const projectId = process.env[projectName]
+
   // https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
-  const response = await fetch(`https://gitlab.com/api/v4/projects/${id}/pipeline?ref=${ref}&variables[][key]=APP_ENV&variables[][value]=${environment}`, {
+  // fetch gitlab api async
+  fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipeline?ref=${ref}&variables[][key]=APP_ENV&variables[][value]=${env}&variables[][key]=DESCRIPTION&variables[][value]=${description}`, {
     method: 'POST',
     headers: {
       'Private-Token': GITLAB_TOKEN,
     }
   })
-  return wrapResponse(`${command} ${argsString}`, await response.json())
-}
+    .then(response => {
+      const res = response.json()
+      fetch(response_url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+      }, {
+        color: '#008000',
+        response_type: 'in_channel',
+        text: 'GitLab pipline create success.',
+        attachments: [{
+          title: 'GitLab pipline link',
+          title_link: res.web_url,
+          text: 'Sending delayed responses'
+        }]
+      })
+    .catch(error => {
+      fetch(response_url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+      }, {
+        color: '#F00',
+        response_type: 'in_channel',
+        text: 'GitLab pipline create Fail.',
+        attachments: [{
+          text: JSON.stringify(error)
+        }]
+      })
+    })
+  })
 
-const help =`
-    Usage: gitlab-ci <command>
-
-    gitlab-ci [project name or alias] <ref> <env>          create pipline
-  `
-
-function wrapResponse (command, json) {
-  console.log(json)
-  // const keys = Object.keys(json)
-  // const attachments = keys.map(key => {
-  //   const value = json[key]
-  //   return { text: `${key} : ${value}`}
-  // })
-  return {
-    // "response_type": "in_channel",
-    text: command,
-    attachments: [{
-      text: JSON.stringify(json)
-    }]
-  }
+  return 'Received the command, please wait the api callback.'
 }
