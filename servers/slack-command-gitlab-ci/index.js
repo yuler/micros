@@ -71,15 +71,16 @@ function gitlabCommand(projectName, args, response_url) {
         headers: {
           'Content-type': 'application/json'
         },
-      }, {
-        color: '#008000',
-        response_type: 'in_channel',
-        text: 'GitLab pipline create success.',
-        attachments: [{
-          title: 'GitLab pipline link',
-          title_link: res.web_url,
-          text: 'Sending delayed responses'
-        }]
+        body: JSON.stringify({
+          color: '#008000',
+          response_type: 'in_channel',
+          text: 'GitLab pipline create success.',
+          attachments: [{
+            title: 'GitLab pipline link',
+            title_link: res.web_url,
+            text: 'Sending delayed responses'
+          }]
+        })
       })
     .catch(error => {
       fetch(response_url, {
@@ -87,13 +88,14 @@ function gitlabCommand(projectName, args, response_url) {
         headers: {
           'Content-type': 'application/json'
         },
-      }, {
-        color: '#F00',
-        response_type: 'in_channel',
-        text: 'GitLab pipline create Fail.',
-        attachments: [{
-          text: JSON.stringify(error)
-        }]
+        body: JSON.stringify({
+          color: '#F00',
+          response_type: 'in_channel',
+          text: 'GitLab pipline create Fail.',
+          attachments: [{
+            text: JSON.stringify(error)
+          }]
+        })
       })
     })
   })
