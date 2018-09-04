@@ -54,6 +54,7 @@ function gitlabCommand(projectName, args, response_url) {
 
   const [ ref, env, description = '' ] = args
   // get projectId
+  projectName = projectName.replace('-', '_').toUpperCase()
   const projectId = process.env[projectName]
 
   // https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
@@ -101,7 +102,7 @@ function gitlabCommand(projectName, args, response_url) {
       },
       body: JSON.stringify({
         response_type: 'in_channel',
-        text: 'GitLab pipline create Fail.',
+        text: 'GitLab pipline create fail.',
         attachments: [{
           color: '#F00',
           text: JSON.stringify(error)
