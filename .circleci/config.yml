@@ -2,10 +2,7 @@ version: 2
 
 defaults: &defaults
   machine: true
-  branches:
-    only:
-      - master
-      - dev
+
   steps:
     - checkout
     - run:
@@ -18,6 +15,7 @@ defaults: &defaults
           docker push $DOCKER_USER/$SERVER:$VERSION
           docker tag $DOCKER_USER/$SERVER:$VERSION $DOCKER_USER/$SERVER:latest
           docker push $DOCKER_USER/$SERVER:latest
+
 
 jobs:
   build-sycn-repo:
