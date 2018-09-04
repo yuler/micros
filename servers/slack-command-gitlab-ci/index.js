@@ -60,12 +60,15 @@ function gitlabCommand(projectName, command, args, response_url) {
 
   const [ ref, env, description = '' ] = args
   // get projectId
-
   const projectId = process.env[projectName]
+
+  if (!['testing', 'pre-release', 'production'].includes(env)) {
+    return handlerError('The <env> must in testing, pre-release or production.')
+  }
 
   // https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
   // fetch gitlab api async
-  fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipeline?ref=${ref}&variables[][key]=APP_ENV&variables[][value]=${env}&variables[][key]=DESCRIPTION&variables[][value]=${description}`, {
+  fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipeline?ref=${ref}&variables[][key]=APP_ENV&variables[][value]=${env}&variables[][key]=DESCRIPTION&variables[][value]=${encodeURIComponent(description)}`, {
     method: 'POST',
     headers: {
       'Private-Token': GITLAB_TOKEN,
