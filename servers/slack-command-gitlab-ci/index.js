@@ -26,12 +26,14 @@ module.exports = async (req, res) => {
   // handler slack command
   // https://api.slack.com/slash-commands#app_command_handling
   const params = querystring.parse(data)
-  const { channel_name: projectName, command, text: argsString, response_url } = params
+  const { channel_name, command, text: argsString, response_url } = params
+  const projectName = channel_name.replace('-', '_').toUpperCase()
   const args = argsString.split(' ')
+  const _command = args.shift()
 
   switch (command) {
     case '/gitlab-ci':
-      return gitlabCommand(projectName, args, response_url)
+      return gitlabCommand(projectName, _command, args, response_url)
   }
 
   return help
@@ -40,21 +42,25 @@ module.exports = async (req, res) => {
 const help = `
   Usage: gitlab-ci <command>
 
-  Commnads:
+  Commands:
 
     create <ref> <env> [desciption]   create gitlab ci pipline from the channel as project name
 
 `
 
-function gitlabCommand(projectName, args, response_url) {
+function gitlabCommand(projectName, command, args, response_url) {
   // if args is empty
-  if (args.length < 2 || args.includes('help') || args.includes('-h')) {
+  if (command !== 'create' ||
+      args.length < 2 ||
+      args.includes('help') ||
+      args.includes('-h')
+    ) {
     return help
   }
 
   const [ ref, env, description = '' ] = args
   // get projectId
-  projectName = projectName.replace('-', '_').toUpperCase()
+
   const projectId = process.env[projectName]
 
   // https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
