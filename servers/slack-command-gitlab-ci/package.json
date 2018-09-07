@@ -1,6 +1,6 @@
 {
   "name": "slack-command-gitlab-ci",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "slack command gitlab-ci",
   "main": "index.js",
   "author": "joyful4yu@gmail.com",

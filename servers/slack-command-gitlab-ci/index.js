@@ -45,41 +45,82 @@ const help = `
   Commands:
 
     create <ref> <env> [desciption]   create gitlab ci pipline from the channel as project name
-
+    env [operation] [key] [value]    get or set gitlabci environment
 `
 
 function gitlabCommand(projectName, command, args, response_url) {
+  const commnads = ['create', 'env']
+
   // if args is empty
-  if (command !== 'create' ||
-      args.length < 2 ||
+  if (!commnads.includes(command) ||
       args.includes('help') ||
       args.includes('-h')
     ) {
     return help
   }
 
-  const [ ref, env, description = '' ] = args
   // get projectId
   const projectId = process.env[projectName]
-
-  if (!['testing', 'pre-release', 'production'].includes(env)) {
-    return handlerError('The <env> must in testing, pre-release or production.')
+  switch (command) {
+    case 'create':
+      return createCommnad()
+    case 'env':
+      return envCommnad()
   }
 
-  // https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
-  // fetch gitlab api async
-  fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipeline?ref=${ref}&variables[][key]=APP_ENV&variables[][value]=${env}&variables[][key]=DESCRIPTION&variables[][value]=${encodeURIComponent(description)}`, {
-    method: 'POST',
-    headers: {
-      'Private-Token': GITLAB_TOKEN,
+  function createCommnad () {
+    const [ ref, env, description = '' ] = args
+
+    if (!['testing', 'pre-release', 'production'].includes(env)) {
+      return handlerError('The <env> must in testing, pre-release or production.')
     }
-  })
-    .then(async response => {
-      const res = await response.json()
-      console.dir(res)
 
-      if (!res.web_url) return handlerError(res.message)
+    // https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
+    // fetch gitlab api async
+    fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipeline?ref=${ref}&variables[][key]=APP_ENV&variables[][value]=${env}&variables[][key]=DESCRIPTION&variables[][value]=${encodeURIComponent(description)}`, {
+      method: 'POST',
+      headers: {
+        'Private-Token': GITLAB_TOKEN,
+      }
+    })
+      .then(async response => {
+        const res = await response.json()
+        console.dir(res)
 
+        if (!res.web_url) return handlerError(res.message)
+
+        fetch(response_url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            response_type: 'in_channel',
+            text: 'GitLab pipline create success.',
+            attachments: [{
+              color: '#008000',
+              title: 'Pipline link',
+              title_link: res.web_url,
+            }]
+          })
+        })
+      .catch(error => {
+        handlerError(error)
+      })
+    })
+
+    return {
+      response_type: 'in_channel',
+      text: 'Received the command, please wait the api callback.',
+      fields: [
+        {
+          title: 'Commnad',
+          value: `gitlab-ci ${command} ${args.join(' ')}`
+        }
+      ]
+    }
+
+    function handlerError(error) {
       fetch(response_url, {
         method: 'POST',
         headers: {
@@ -87,45 +128,128 @@ function gitlabCommand(projectName, command, args, response_url) {
         },
         body: JSON.stringify({
           response_type: 'in_channel',
-          text: 'GitLab pipline create success.',
+          text: 'create command fail.',
           attachments: [{
-            color: '#008000',
-            title: 'Pipline link',
-            title_link: res.web_url,
+            color: '#F00',
+            text: JSON.stringify(error),
           }]
         })
       })
-    .catch(error => {
-      handlerError(error)
-    })
-  })
-
-  return {
-    response_type: 'in_channel',
-    text: 'Received the command, please wait the api callback.',
-    fields: [
-      {
-        title: 'Commnad',
-        value: `gitlab-ci ${command} ${args.join(' ')}`
-      }
-    ]
+    }
   }
 
-  function handlerError(error) {
-    fetch(response_url, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        response_type: 'in_channel',
-        text: 'GitLab pipline create fail.',
-        attachments: [{
-          color: '#F00',
-          text: JSON.stringify(error),
-        }]
+  // https://docs.gitlab.com/ee/api/project_level_variables.html
+  function envCommnad () {
+    const [ operation, key, value ] = args
+    if (!operation) {
+      getEnvList()
+    } else if (!['get', 'set'].includes(operation)) {
+      handlerError('The [operation] must in get or set.')
+    } else if (!key) {
+      handlerError(`The [key] must exist when ${operation}`)
+    } else if (operation === 'get') {
+      getEnv(key)
+    } else if (operation === 'set')  {
+      if (!value) return handlerError(`The [value] must exist when key ${operation}`)
+      setEnv(key, value)
+    }
+
+    return {
+      response_type: 'in_channel',
+      text: 'Received the command, please wait the api callback.',
+      fields: [
+        {
+          title: 'Commnad',
+          value: `gitlab-ci ${command} ${args.join(' ')}`
+        }
+      ]
+    }
+
+    async function getEnvList() {
+      try {
+        const response = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/variables `, {
+          method: 'GET',
+          headers: {
+            'Private-Token': GITLAB_TOKEN,
+          }
+        })
+        const res = await response.json()
+        fetch(response_url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            response_type: 'in_channel',
+            attachments: res.map(variable => {
+              return { text: `${variable.key}  ${variable.value}  ${ variable.protected ? 'protected' : ''}`}
+            })
+          })
+        })
+      } catch (error) {
+        return handlerError(error)
+      }
+    }
+
+    async function getEnv (key) {
+      try {
+        const response = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/variables/${key} `, {
+          method: 'GET',
+          headers: {
+            'Private-Token': GITLAB_TOKEN,
+          }
+        })
+        const variable = await response.json()
+        fetch(response_url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            response_type: 'in_channel',
+            attachments: [{
+              text: `${variable.key}  ${variable.value}  ${ variable.protected ? 'protected' : ''}`
+            }]
+          })
+        })
+      } catch (error) {
+        return handlerError(error)
+      }
+    }
+
+    async function setEnv(key, value) {
+      try {
+        const response = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/variables/${key}?value=${value}`, {
+          method: 'PUT',
+          headers: {
+            'Private-Token': GITLAB_TOKEN,
+          }
+        })
+        const res = await response.json()
+        getEnvList()
+      } catch (error) {
+        return handlerError(error)
+      }
+    }
+
+    function handlerError(error) {
+      console.log(error)
+      fetch(response_url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          response_type: 'in_channel',
+          text: 'env command fail.',
+          attachments: [{
+            color: '#F00',
+            text: JSON.stringify(error),
+          }]
+        })
       })
-    })
+    }
+
   }
 }
 
