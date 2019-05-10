@@ -2,40 +2,29 @@ const crypto = require('crypto')
 const querystring = require('querystring')
 
 const { send, text } = require('micro')
-const arg = require('arg')
 
-const slackCommands = ['/ci']
+const slackCommandMap = {
+  '/ci': 'ci'
+}
+
+const tokens = process.env.SLACK_COMMAND_TOKENS
 
 module.exports = async (req, res) => {
-  // valid signature
-  const success = await validSignature(req)
-  if (!success) return send(res, 401, 'Unauthorized')
-
-  // handler slack command
-  // https://api.slack.com/slash-commands#app_command_handling
   const body = await text(req)
   const params = querystring.parse(body)
 
-  if (!slackCommands.includes(params.command)) {
-    return send(res, 404, `\`${params.command}\` slack command does not exist`)
+  // valid tokens
+  if (!tokens.includes(params.token)) {
+    return 'Unauthorized'
   }
 
-  const command = require(`.${params.command}`)
+  // valid slack command name
+  if (!slackCommandMap[params.command]) {
+    return `slack command \`${params.command}\` does not exist`
+  }
+
+  // handler slack command
+  const command = require(`./${slackCommandMap[params.command]}`)
+  params.argv = params.text.split(' ')
   return command(params)
-}
-
-// valid signature
-// https://api.slack.com/docs/verifying-requests-from-slack#a_recipe_for_security
-async function validSignature(req) {
-  const signature = req.headers['x-slack-signature']
-  if (!signature) return false
-
-  const timestamp = req.headers['x-slack-request-timestamp']
-  const body = await text(req)
-  const data = `v0:${timestamp}:${body}`
-  const _signature = 'v0=' + crypto.createHmac('sha256', SLACK_COMMAND_SERCET)
-    .update(data)
-    .digest('hex')
-
-  return signature === _signature
 }

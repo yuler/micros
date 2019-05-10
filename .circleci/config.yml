@@ -1,6 +1,11 @@
 version: 2
 
 defaults: &defaults
+  branches: 
+    only: 
+      - master
+      - tag
+
   machine: true
 
   steps:
@@ -18,15 +23,15 @@ defaults: &defaults
 
 
 jobs:
-  build-sycn-repo:
-    <<: *defaults
-    environment:
-      SERVER: sync-gitlab-repo-from-gogs
+  # build-sycn-repo:
+  #   <<: *defaults
+  #   environment:
+  #     SERVER: sync-gitlab-repo-from-gogs
 
-  build-slack-command:
-    <<: *defaults
-    environment:
-      SERVER: slack-command-gitlab-ci
+  # build-slack-command:
+  #   <<: *defaults
+  #   environment:
+  #     SERVER: slack-command-gitlab-ci
 
 workflows:
   version: 2

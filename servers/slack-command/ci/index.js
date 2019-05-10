@@ -1,6 +1,4 @@
-const arg = require('arg')
-
-const commands = ['pipeline']
+const commandMap = require('./commands')
 
 const help = () => `
   ci [options] <command>
@@ -13,25 +11,17 @@ const help = () => `
 `
 
 module.exports = async function main(params) {
-  let args = null
-  try {
-    args = arg({
-      '--help': Boolean,
-      '-h': '--help',
-    },
-    { argv: params.text, permissive: true })
-  }
+  const command = params.argv[0]
 
-  const command = args._.[0]
   if (!command) {
-    if (args['--help']) {
+    if (params.argv.includes['-h'] || params.argv.includes['--help']) {
       return help()
     }
   }
 
-  if (!commands.includes(command)) {
-    return `\`${command}\` command does not exist`
+  if (command && !commandMap[command]) {
+    return `ci \`${command}\` command does not exist`
   }
 
-  return require(`./${command}`)(params, args)
+  return require(`./commands/${command}`)(params)
 }
