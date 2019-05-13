@@ -3,6 +3,8 @@ const subcommandMap = {
   default: 'ls',
   create: 'create',
   add: 'create',
+  variable: 'variable',
+  var: 'variable',
 }
 
 const help = () =>
@@ -13,6 +15,7 @@ const help = () =>
 
     ls                                      Show running pipeline list (default)
     create | add <ref> [description]        Create pipeline use git commit <ref>
+    variable | var <pipeline_id>            Show variables of a pipeline
 
   Options:
 

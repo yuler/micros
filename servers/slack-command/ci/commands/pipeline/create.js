@@ -16,6 +16,10 @@ module.exports = async function add(params, args) {
     }
   })
 
+  if (desciption) {
+    variables['DESCIPTION'] = desciption
+  }
+
   pipelineCreate(id, ref, variables)
     .then(async response => {
       const pipeline = await response.json()

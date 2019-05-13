@@ -1,10 +1,14 @@
-const { variableList, slackNotifaction } = require('../../api')
+const { pipelineVariable, slackNotifaction } = require('../../api')
 
 module.exports = function ls(params, args) {
   const { team_domain, channel_name, response_url } = params
   const id = [team_domain, channel_name].join('%2F')
 
-  variableList(id)
+  const [pipelineId] = args._.slice(2)
+
+  if (!pipelineId) if (!ref) return `Miss <pipeline_id> argument`
+
+  pipelineVariable(id, pipelineId)
     .then(async response => {
       const variables = await response.json()
       const attachments = variables.map(variable => {
@@ -14,7 +18,7 @@ module.exports = function ls(params, args) {
           text: `*\`${key}\`*: ${value}`
         }
       })
-      const text = variables.length ? 'Variable List:' : 'Don\'t hava any variable'
+      const text = variables.length ? 'Pipline variable List:' : 'Pipline don\'t hava any variable'
       slackNotifaction(response_url, text, attachments)
     })
 
