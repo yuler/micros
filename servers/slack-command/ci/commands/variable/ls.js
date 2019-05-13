@@ -11,10 +11,10 @@ module.exports = function ls(params, args) {
         const { key, value } = variable
         return {
           type: 'mrkdwn',
-          text: `\`*${key}*\`: ${value}`
+          text: `*\`${key}\`*: ${value}`
         }
       })
-      const text = pipelines.length ? 'Variable List:' : 'Don hava any variable'
+      const text = variables.length ? 'Variable List:' : 'Don hava any variable'
       slackNotifaction(response_url, text, attachments)
     })
 

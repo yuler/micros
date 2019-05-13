@@ -5,7 +5,8 @@ const subcommandMap = {
   add: 'create',
 }
 
-const help = () => `
+const help = () =>
+`
   Usage ci pipline [options] <command>
 
   Commands:

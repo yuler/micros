@@ -1,6 +1,7 @@
 const commandMap = require('./commands')
 
-const help = () => `
+const help = () =>
+`
   ci [options] <command>
 
   Command:
@@ -15,7 +16,9 @@ module.exports = async function main(params) {
   const command = params.argv[0]
 
   if (!command) {
-    if (params.argv.includes['-h'] || params.argv.includes['--help']) {
+    if (params.argv.includes['-h'] ||
+      params.argv.includes['--help'] ||
+      params.text.trim() === '') {
       return help()
     }
   }
@@ -24,5 +27,5 @@ module.exports = async function main(params) {
     return `ci \`${command}\` command does not exist`
   }
 
-  return require(`./commands/${command}`)(params)
+  return require(`./commands/${commandMap[command]}`)(params)
 }

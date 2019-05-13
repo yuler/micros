@@ -6,7 +6,8 @@ const subcommandMap = {
   rm: 'rm',
 }
 
-const help = () => `
+const help = () =>
+`
   Usage ci variable [options] <command>
 
   Commands:
