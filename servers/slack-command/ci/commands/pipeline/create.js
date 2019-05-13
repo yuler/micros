@@ -17,7 +17,7 @@ module.exports = async function add(params, args) {
   })
 
   if (desciption) {
-    variables['DESCIPTION'] = desciption
+    variables['DESCIPTION'] = encodeURIComponent(desciption)
   }
 
   pipelineCreate(id, ref, variables)
