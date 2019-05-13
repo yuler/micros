@@ -1,10 +1,6 @@
 version: 2
 
 defaults: &defaults
-  branches:
-    only:
-      - master
-      - tag
 
   machine: true
 
@@ -21,7 +17,6 @@ defaults: &defaults
           docker tag $DOCKER_USER/$SERVER:$VERSION $DOCKER_USER/$SERVER:latest
           docker push $DOCKER_USER/$SERVER:latest
 
-
 jobs:
   # build-sycn-repo:
   #   <<: *defaults
@@ -37,5 +32,4 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-sycn-repo
       - build-slack-command
