@@ -17,7 +17,7 @@ module.exports = function ls(params, args) {
         }
       })
       const text = pipelines.length ? 'Running pipeline List:' : 'No pipeline is running'
-      slackNotifaction(response_url, text, attachments)
+      slackNotifaction(response_url, `\`${params.command} ${params.text}\`\n${text}`, attachments)
     })
 
   return `\`${params.command} ${params.text}\` command received`

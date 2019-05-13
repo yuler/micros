@@ -4,7 +4,7 @@ module.exports = async function add(params, args) {
   const { team_domain, channel_name, response_url } = params
   const id = [team_domain, channel_name].join('%2F')
 
-  const [ref, desciption] = args._.slice(2)
+  const [ref, description] = args._.slice(2)
 
   if (!ref) return `Miss <ref> argument`
 
@@ -16,8 +16,8 @@ module.exports = async function add(params, args) {
     }
   })
 
-  if (desciption) {
-    variables['DESCIPTION'] = encodeURIComponent(desciption)
+  if (description) {
+    variables['DESCRIPTION'] = encodeURIComponent(description)
   }
 
   pipelineCreate(id, ref, variables)
@@ -32,7 +32,7 @@ module.exports = async function add(params, args) {
           `*status*: ${status} <${web_url}|pipeline link>`,
       }]
 
-      slackNotifaction(response_url, 'Pipeline create successed.', attachments)
+      slackNotifaction(response_url, `\`${params.command} ${params.text}\`\nPipeline create successed.`, attachments)
     })
 
   return `\`${params.command} ${params.text}\` command received`

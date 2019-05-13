@@ -13,7 +13,7 @@ module.exports = function ls(params, args) {
       const data = await response.text()
       // @TODO
       console.log(data)
-      const text = `Remove variable *\`${key}\`* successed`
+      const text = `\`${params.command} ${params.text}\`\nRemove variable *\`${key}\`* successed`
       slackNotifaction(response_url, text)
     })
 

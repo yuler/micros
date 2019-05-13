@@ -19,7 +19,7 @@ module.exports = function ls(params, args) {
         }
       })
       const text = variables.length ? 'Pipline variable List:' : 'Pipline don\'t hava any variable'
-      slackNotifaction(response_url, text, attachments)
+      slackNotifaction(response_url, `\`${params.command} ${params.text}\`\n${text}`, attachments)
     })
 
   return `\`${params.command} ${params.text}\` command received`

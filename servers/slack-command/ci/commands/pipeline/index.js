@@ -14,7 +14,7 @@ const help = () =>
   Commands:
 
     ls                                      Show running pipeline list (default)
-    create | add <ref> [description]        Create pipeline use git commit <ref>
+    create   | add <ref> [description]      Create pipeline use git commit <ref>
     variable | var <pipeline_id>            Show variables of a pipeline
 
   Options:

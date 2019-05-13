@@ -22,7 +22,7 @@ module.exports = function ls(params, args) {
         type: 'mrkdwn',
         text: `*\`${key}\`*: ${value}`
       }]
-      const text = `Set variable *\`${key}\`* successed`
+      const text = `\`${params.command} ${params.text}\`\nSet variable *\`${key}\`* successed`
       slackNotifaction(response_url, text, attachments)
     })
 
