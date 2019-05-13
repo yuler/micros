@@ -3,30 +3,54 @@ const apiRoot = 'https://gitlab.com/api/v4'
 
 const { GITLAB_TOKEN } = process.env
 
-const gitlabHeaders = {
+const headers = {
   'Private-Token': GITLAB_TOKEN,
 }
 
-// gitlab pipeline
+// gitlab ci pipeline
 // https://docs.gitlab.com/ee/api/pipelines.html
 exports.pipelineList = function(id) {
   return fetch(`${apiRoot}/projects/${id}/pipelines?scope=running`, {
     method: 'GET',
-    headers: gitlabHeaders
+    headers
   })
 }
 exports.pipelineCreate = function(id, ref, variables) {
   console.log(`${apiRoot}/projects/${id}/pipeline?ref=${ref}&${serialize(variables, 'variables')}`)
   return fetch(`${apiRoot}/projects/${id}/pipeline?ref=${ref}&${serialize(variables, 'variables')}`, {
     method: 'POST',
-    headers: gitlabHeaders
+    headers
   })
 }
+
+// github ci variable
+// https://docs.gitlab.com/ee/api/project_level_variables.html
+exports.variableList = function(id) {
+  return fetch(`${apiRoot}/projects/${id}`, {
+    method: 'GET',
+    headers
+  })
+}
+
+exports.variableSet = function(id, key, value) {
+  return fetch(`${apiRoot}/projects/${id}/variables/${key}?value=${value}`, {
+    method: 'PUT',
+    headers
+  })
+}
+
+exports.variableRemove = function(id, key) {
+  return fetch(`${apiRoot}/projects/${id}/variables/${key}`, {
+    method: 'DELETE',
+    headers
+  })
+}
+
 
 // slack
 // @ attachments
 // https://api.slack.com/tools/block-kit-builder
-exports.slackNotifaction = function(response_url, text, attachments) {
+exports.slackNotifaction = function(response_url, text, attachments = []) {
   return fetch(response_url, {
     method: 'POST',
     headers: {

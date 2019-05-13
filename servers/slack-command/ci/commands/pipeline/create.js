@@ -3,7 +3,11 @@ const { pipelineCreate, slackNotifaction } = require('../../api')
 module.exports = async function add(params, args) {
   const { team_domain, channel_name, response_url } = params
   const id = [team_domain, channel_name].join('%2F')
+
   const [ref, desciption] = args._.slice(2)
+
+  if (!ref) return `Miss <ref> argument`
+
   const variables = {}
   ;(args['--variable'] || []).map(str => {
     const [key, value] = str.split(':')
@@ -12,8 +16,6 @@ module.exports = async function add(params, args) {
     }
   })
 
-  if (!ref) return `Miss <ref> argument`
-
   pipelineCreate(id, ref, variables)
     .then(async response => {
       const pipeline = await response.json()
@@ -21,11 +23,11 @@ module.exports = async function add(params, args) {
 
       const attachments = [{
         type: 'mrkdwn',
-        text: 
+        text:
           `*id*: ${id} *sha*: ${sha} *ref*: ${ref}\n` +
           `*status*: ${status} <${web_url}|pipeline link>`,
       }]
-     
+
       slackNotifaction(response_url, 'Pipeline create successed.', attachments)
     })
 

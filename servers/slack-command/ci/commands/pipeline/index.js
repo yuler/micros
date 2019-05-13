@@ -1,8 +1,8 @@
 const arg = require('arg')
 const subcommandMap = {
   default: 'ls',
-  add: 'add',
-  create: 'add',
+  create: 'create',
+  add: 'create',
 }
 
 const help = () => `
@@ -11,7 +11,7 @@ const help = () => `
   Commands:
 
     ls                                      Show running pipeline list (default)
-    add | create <ref> [description]        Create pipeline use git commit <ref>
+    create | add <ref> [description]        Create pipeline use git commit <ref>
 
   Options:
 
@@ -21,17 +21,17 @@ const help = () => `
 
   Examples:
 
-    - pipeline ls
+    - Show pipeline running list
 
     $ ci pipeline ls
 
-    - pipeline create
+    - Create a pipeline
 
-    $ ci pipline add master description -v APP_ENV:testing -vvariable=APP_VERSION:1.0.0
+    $ ci pipline create master description -v APP_ENV:testing --variable=APP_VERSION:1.0.0
 
     or
 
-    $ ci pipline create master description -e APP_ENV:testing -env=APP_VERSION:1.0.0
+    $ ci pipline add master description -e APP_ENV:testing --env=APP_VERSION:1.0.0
 
 `
 

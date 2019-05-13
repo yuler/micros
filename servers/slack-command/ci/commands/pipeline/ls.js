@@ -11,13 +11,13 @@ module.exports = function ls(params, args) {
         const { id, sha, ref, status, web_url } = pipeline
         return {
           type: 'mrkdwn',
-          text: 
+          text:
             `*id*: ${id} *sha*: ${sha} *ref*: ${ref}\n` +
             `*status*: ${status} <${web_url}|pipeline link>`,
         }
       })
       const text = pipelines.length ? 'Running pipeline List:' : 'No pipeline is running'
-      slackNotifaction(response_url, 'Running pipeline List:', attachments)
+      slackNotifaction(response_url, text, attachments)
     })
 
   return `\`${params.command} ${params.text}\` command received`

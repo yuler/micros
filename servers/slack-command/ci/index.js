@@ -4,10 +4,11 @@ const help = () => `
   ci [options] <command>
 
   Command:
-    pipeline      [cmd]      Manages gitlab pipeline
+    pipeline          [cmd]                 Manages gitlab ci pipeline
+    variable | var    [cmd]                 Manages gitlab ci environment variable
 
   Options:
-    -h, --help               Output usage information
+    -h, --help                              Output usage information
 `
 
 module.exports = async function main(params) {
