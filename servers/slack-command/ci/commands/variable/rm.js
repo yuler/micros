@@ -10,9 +10,9 @@ module.exports = function ls(params, args) {
 
   variableRemove(id, key)
     .then(async response => {
-      const response = await response.json()
+      const data = await response.text()
       // @TODO
-      console.log(response)
+      console.log(data)
       const text = `Remove variable *\`${key}\`* successed`
       slackNotifaction(response_url, text)
     })

@@ -20,9 +20,9 @@ module.exports = function ls(params, args) {
       const { key , value } = variable
       const attachments = [{
         type: 'mrkdwn',
-        text: `\`*${key}*\`: ${value}`
+        text: `*\`${key}\`*: ${value}`
       }]
-      const text = `Set variable \`*${key}*\` successed`
+      const text = `Set variable *\`${key}\`* successed`
       slackNotifaction(response_url, text, attachments)
     })
 

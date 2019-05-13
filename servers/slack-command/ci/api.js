@@ -32,7 +32,7 @@ exports.variableList = function(id) {
 }
 
 exports.variableCreate = function(id, key, value) {
-  return fetch(`${apiRoot}/projects/${id}/variables/${key}?value=${value}`, {
+  return fetch(`${apiRoot}/projects/${id}/variables?key=${key}&value=${value}`, {
     method: 'POST',
     headers
   })
