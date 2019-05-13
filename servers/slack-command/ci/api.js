@@ -25,11 +25,10 @@ exports.pipelineCreate = function(id, ref, variables) {
 
 exports.pipelineVariable = function(id, pipelineId) {
   return fetch(`${apiRoot}/projects/${id}/pipelines/${pipelineId}/variables`, {
-    method: 'POST',
+    method: 'GET',
     headers
   })
 }
-
 
 // github ci variable
 // https://docs.gitlab.com/ee/api/project_level_variables.html
