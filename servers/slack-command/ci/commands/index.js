@@ -1,3 +1,3 @@
 module.exports = {
-  pipeline: 'pipeline'
+  pipeline: 'pipeline',
 }
