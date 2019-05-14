@@ -23,6 +23,20 @@ exports.pipelineCreate = function(id, ref, variables) {
   })
 }
 
+exports.pipelineCancel = function(id, pipelineId) {
+  return fetch(`${apiRoot}/projects/${id}/pipelines/${pipelineId}/cancel`, {
+    method: 'POST',
+    headers
+  })
+}
+
+exports.pipelineRemove = function(id, pipelineId) {
+  return fetch(`${apiRoot}/projects/${id}/pipelines/${pipelineId}`, {
+    method: 'DELETE',
+    headers
+  })
+}
+
 exports.pipelineVariable = function(id, pipelineId) {
   return fetch(`${apiRoot}/projects/${id}/pipelines/${pipelineId}/variables`, {
     method: 'GET',

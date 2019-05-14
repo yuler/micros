@@ -5,6 +5,8 @@ const subcommandMap = {
   add: 'create',
   variable: 'variable',
   var: 'variable',
+  rm: 'rm',
+  cancel: 'cancel'
 }
 
 const help = () =>
@@ -15,6 +17,8 @@ const help = () =>
 
     ls                                      Show running pipeline list (default)
     create   | add <ref> [description]      Create pipeline use git commit <ref>
+    cancel <pipeline_id>                    Cancel a pipeline
+    rm  <pipeline_id>                       Remove a pipeline
     variable | var <pipeline_id>            Show variables of a pipeline
 
   Options:
