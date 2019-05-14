@@ -1,7 +1,7 @@
 const { pipelineCreate, slackNotifaction } = require('../../api')
 
 module.exports = async function add(params, args) {
-  const { team_domain, channel_name, response_url } = params
+  const { team_domain, channel_name, response_url, user_name } = params
   const id = [team_domain, channel_name].join('%2F')
 
   const [ref, description] = args._.slice(2)
@@ -32,7 +32,7 @@ module.exports = async function add(params, args) {
           `*status*: ${status} <${web_url}|pipeline link>`,
       }]
 
-      slackNotifaction(response_url, `\`${params.command} ${params.text}\`\nPipeline create successed.`, attachments)
+      slackNotifaction(response_url, `\`${params.command} ${params.text}\`\nCreated by ${user_name}\nPipeline create successed.`, attachments)
     })
 
   return `\`${params.command} ${params.text}\` command received`
