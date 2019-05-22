@@ -9,13 +9,13 @@ module.exports = function ls(params, args) {
     return `Miss <key> argument`
   }
 
-  const keys = args._.slice()
+  const keys = args._.slice(2)
 
   Promise.all(keys.map(async key => {
     const response = await variableRemove(id, key)
     return response.text()
   })).then(responseList => {
-    const _keys = keys.map(pair => `*\`${key}\`*`)
+    const _keys = keys.map(key => `*\`${key}\`*`)
     const text = `\`${params.command} ${params.text}\`\nRemove variable ${_keys.join(' ')} successed`
     slackNotifaction(response_url, text)
   })

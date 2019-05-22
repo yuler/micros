@@ -10,7 +10,7 @@ module.exports = function ls(params, args) {
   }
 
   // chunk array
-  const pairs = args._.reduce((arr, item, idx) => {
+  const pairs = args._.slice(2).reduce((arr, item, idx) => {
     return idx % 2 === 0
       ? [...arr, [item]]
       : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]]
