@@ -13,8 +13,8 @@ const help = () =>
   Commands:
 
     ls                                      Show environment variable list
-    set <key> <value>                       Create/Update a environment variable
-    rm  <key>                               Remove a environment variable
+    set <key> <value> ...<key> ...<value>   Create/Update a or multiple environment variable
+    rm  <key> ...<key>                      Remove a or multiple environment variable
 
   Options:
 
@@ -30,9 +30,17 @@ const help = () =>
 
     $ ci variable set APP_ENV testing
 
+    - Create/Update multiple environment variable
+
+    $ ci variable set APP_ENV testing APP_VERSION 7.5.0
+
     - Remove a environment variable
 
     $ ci variable rm APP_ENV
+
+    - Remove multiple environment variable
+
+    $ ci variable rm APP_ENV APP_VERSION
 
 `
 
