@@ -15,7 +15,8 @@ module.exports = function ls(params, args) {
     const response = await variableRemove(id, key)
     return response.text()
   })).then(responseList => {
-    const text = `\`${params.command} ${params.text}\`\nRemove variable ${keys.map(key => '*\`${key}\`*').join(' ')} successed`
+    const _keys = keys.map(pair => `*\`${key}\`*`)
+    const text = `\`${params.command} ${params.text}\`\nRemove variable ${_keys.join(' ')} successed`
     slackNotifaction(response_url, text)
   })
 

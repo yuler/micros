@@ -32,7 +32,7 @@ module.exports = function ls(params, args) {
       }
     })
   }).then(attachments => {
-    const keys = pairs.map(pair => '*\`${pair[0}\`*')
+    const keys = pairs.map(pair => `*\`${pair[0]}\`*`)
     const text = `\`${params.command} ${params.text}\`\nSet variable ${keys.join(' ')} successed`
     slackNotifaction(response_url, text, attachments)
   })
