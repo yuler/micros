@@ -9,7 +9,7 @@ defaults: &defaults
     - run:
         name: Docker build and push
         command: |
-          cd servers/$SERVER
+          cd $SERVER
           VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
           docker build -t $DOCKER_USER/$SERVER:$VERSION .
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
