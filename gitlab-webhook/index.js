@@ -1,8 +1,18 @@
-const { json } = require('micro')
+const { send } = require('micro')
+
+const eventMap = {
+  'Merge Request Hook': 'merge-request'
+}
+
+const { GITLAB_WEBHOOK_SECRET_TOKEN } = process.env
 
 module.exports = async (req, res) => {
-  const event = req.headers['x-gitlab-event']
-  const body = await json(req)
+  const token = req.headers['x-gitlab-token']
+  if (!token || token !== GITLAB_WEBHOOK_SECRET_TOKEN) send(res, 401, 'Unauthorized')
 
-  return 'test'
+  const event = req.headers['x-gitlab-event']
+  if (!eventMap[event]) send(res, 404, `Unsupported event: ${event}`)
+
+  const handler = require(`./${eventMap[event]}`)
+  return await handler(req, res)
 }
