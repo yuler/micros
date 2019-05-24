@@ -4,7 +4,7 @@ const { slackNotifaction } = require('./api')
 const { SLACK_WEBHOOK } = process.env
 
 module.exports = async (req, res) => {
-  const { user, project, repository, object_attributes, labels } = await json(req)
+  const { user, project, repository, object_attributes } = await json(req)
 
   const { username: operator } = user
   const { namespace, name } = project
@@ -17,10 +17,12 @@ module.exports = async (req, res) => {
   let descriptionFormated = description
   if (['open', 'reopen', 'update'].includes(action) && /@[\w]+/g.test(description)) {
     mention = generateMention(namespace, assignee_id)
-    descriptionFormated.replace(/@all/g, '<!channel>($1)')
-    descriptionFormated.replace(/@([\w]+)/g, function(origin, username) {
-      return generateMention(namespace, username)(${origin})
-    })
+    descriptionFormated = description
+      .replace(/@all/g, '<!channel>($1)')
+      .replace(/@([\w]+)/g, function(origin, username) {
+        return `${generateMention(namespace, username)}(${origin})`
+      }
+    )
   } else {
     mention = generateMention(namespace, author_id)
   }
@@ -43,19 +45,19 @@ function generateMention(org, userIdOrUsername) {
   let username
   let key
   if (typeof userIdOrUsername === 'string') {
-    id = null
+    userId = null
     username = userIdOrUsername
   }
 
   if (userId) {
     key = getEnvKey(org, userId)
     username = process.env[key]
-    if (!username) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it`
+    if (!username) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it\n`
   }
 
   key = getEnvKey(org, username)
   const mentionId = process.env[key]
-  if (!mentionId) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it`
+  if (!mentionId) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it\n`
 
   return `<@${mentionId}>`
 }
