@@ -13,45 +13,49 @@ module.exports = async (req, res) => {
 
   // mention assignee or author user
   let mention
-  // action is open or repone, format description, is contains mention?
+  // action is open|repone|update, format description, is contains mention?
   let descriptionFormated = description
-  if (action.includes('open') && /@[\w]+/g.test(description)) {
-    mention = generateMentionAssignee(namespace, assignee_id)
+  if (['open', 'reopen', 'update'].includes(action) && /@[\w]+/g.test(description)) {
+    mention = generateMention(namespace, assignee_id)
     descriptionFormated.replace(/@all/g, '<!channel>($1)')
     descriptionFormated.replace(/@([\w]+)/g, function(origin, username) {
-      const mentionId = process.env[getEnvKey(namespace, username)]
-      return mentionId ? `<@${mentionId}>(${origin})` : origin
+      return generateMention(namespace, username)(${origin})
     })
   } else {
-    mention = generateMentionAssignee(namespace, author_id)
+    mention = generateMention(namespace, author_id)
   }
 
   const text = [
     mention,
-    `${generateMentionAssignee()}(${operator}) \`${action}\` <${url}|!${iid} *${title}*> in <${homepage}|${namespace}/${name}>`,
+    `${generateMention(namespace, operator)}(${operator}) \`${action}\` <${url}|!${iid} *${title}*> in <${homepage}|${namespace}/${name}>`,
     descriptionFormated
   ].join('\n')
 
   return await slackNotifaction(SLACK_WEBHOOK, `#${name}`, text)
 }
 
-function getEnvKey(org, username) {
-  return `GITLAB_${org.toUpperCase()}_${username.toUpperCase()}`
+function getEnvKey(org, userIdOrUsername) {
+  return `GITLAB_${org.toUpperCase()}_${userIdOrUsername.toString().toUpperCase()}`
 }
 
-function generateMentionAssignee(org, userId)  {
-  if (!userId) return `<!channel>\nAssignee None`
-
-  userId = userId.toString()
-  const username = process.env[getEnvKey(org, userId)]
-  if (!username) {
-    return `<!channel>\nDon't exist *${username}* in environment\nPlease set it`
+function generateMention(org, userIdOrUsername) {
+  let userId = userIdOrUsername
+  let username
+  let key
+  if (typeof userIdOrUsername === 'string') {
+    id = null
+    username = userIdOrUsername
   }
 
-  const mentionId = process.env[getEnvKey(org, username)]
-  if (!mentionId) {
-    return `<!channel>\nDon't exist *${mentionId}* in environment\nPlease set it` 
+  if (userId) {
+    key = getEnvKey(org, userId)
+    username = process.env[key]
+    if (!username) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it`
   }
+
+  key = getEnvKey(org, username)
+  const mentionId = process.env[key]
+  if (!mentionId) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it`
 
   return `<@${mentionId}>`
 }
