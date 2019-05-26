@@ -15,8 +15,7 @@ const help = () =>
 module.exports = async function main(params) {
   const command = params.argv[0]
 
-  if (params.argv.includes['-h'] ||
-    params.argv.includes['--help'] ||
+  if (['-h', '--help'].includes(command) ||
     params.text.trim() === '') {
     return help()
   }
