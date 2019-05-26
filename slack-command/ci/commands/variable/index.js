@@ -13,8 +13,8 @@ const help = () =>
   Commands:
 
     ls                                      Show environment variable list
-    set <key> <value> ...<key> ...<value>   Create/Update a or multiple environment variable
-    rm  <key> ...<key>                      Remove a or multiple environment variable
+    set ...<key=value | <key> <value>>      Create/Update a or multiple environment variable
+    rm  ...<key>                            Remove a or multiple environment variable
 
   Options:
 

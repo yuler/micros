@@ -3,18 +3,23 @@ const { variableSet, variableCreate, slackNotifaction } = require('../../api')
 module.exports = function ls(params, args) {
   const { team_domain, channel_name, response_url } = params
   const id = [team_domain, channel_name].join('%2F')
+  const _ = args._.slice(2)
 
   // valid
-  if (args._.length === 0 || args._.length % 2 !== 0) {
-    return `Argument does not a or multiple pair. argument: ${args._.join(' ')}`
+  if (_.length < 1) {
+    return `Miss <key=value | <key> <value>> argument: ${args._.join(' ')}`
   }
 
-  // chunk array
-  const pairs = args._.slice(2).reduce((arr, item, idx) => {
-    return idx % 2 === 0
-      ? [...arr, [item]]
-      : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]]
-  }, [])
+  // pairs
+  const pairs = []
+  for (let i = 0; i < _.length; i++) {
+    if (_[i].includes('=')) {
+      pairs.push(..._.split('=', 2))
+      continue
+    }
+    pairs.push(_[i])
+    pairs.push(_[++i])
+  }
 
   Promise.all(pairs.map(async pair => {
     const [key, value] = pair

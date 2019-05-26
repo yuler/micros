@@ -1,15 +1,15 @@
 const { variableRemove, slackNotifaction } = require('../../api')
 
-module.exports = function ls(params, args) {
+module.exports = function rm(params, args) {
   const { team_domain, channel_name, response_url } = params
   const id = [team_domain, channel_name].join('%2F')
 
+  const keys = args._.slice(2)
+
   // valid
-  if (!args._.length) {
+  if (keys.length < 0) {
     return `Miss <key> argument`
   }
-
-  const keys = args._.slice(2)
 
   Promise.all(keys.map(async key => {
     const response = await variableRemove(id, key)

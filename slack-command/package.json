@@ -18,6 +18,7 @@
   "homepage": "https://github.com/yuler/micros#readme",
   "dependencies": {
     "arg": "^4.1.0",
+    "dotenv": "^8.0.0",
     "micro": "^9.3.4",
     "node-fetch": "^2.5.0"
   }

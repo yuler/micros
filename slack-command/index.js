@@ -4,7 +4,8 @@ const querystring = require('querystring')
 const { send, text } = require('micro')
 
 const slackCommandMap = {
-  '/ci': 'ci'
+  '/ci': 'ci',
+  '/mapping': 'mapping'
 }
 
 const tokens = process.env.SLACK_COMMAND_TOKENS
