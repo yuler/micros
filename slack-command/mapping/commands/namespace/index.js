@@ -50,7 +50,7 @@ module.exports = async function main(params) {
   if (!subcommand) {
     if (args['--help']) return help(args._[0])
     subcommand = subcommandMap.default
-    args.unshift(subcommand)
+    args._.unshift(subcommand)
   }
 
   return require(`./${subcommand}`)(params, args)
