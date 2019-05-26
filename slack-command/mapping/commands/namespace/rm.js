@@ -28,12 +28,15 @@ module.exports = function rm(params, args) {
   // save
   fs.writeFileSync(filepath(filename), Object.keys(mapping).map(key => `${key}=${mapping[key]}\n`).join(''))
 
-  const text = `Remove Successed\nFile mapping.${namespace}.${team_domain}.env List:`
+  let text
   const attachments = Object.keys(mapping)
     .map(key => ({
       type: 'mrkdwn',
       text: `*\`${key}\`*: ${mapping[key]}`
     }))
+  if (attachments.length) text = `File mapping.${namespace}.${team_domain}.env List:`
+  else text = `File mapping.${namespace}.${team_domain}.env does not hava any value`
+    
   notice(response_url, text, attachments)
 
   return `\`${params.command} ${params.text}\` command received`

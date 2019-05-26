@@ -14,7 +14,7 @@ services:
       - ./gitlab-token.env
       - ./slack-command-tokens.env
     volumes:
-      - .env:/var/.env
+      - .env:/src/.env
 
   gitlab-webhook:
     image: yule/gitlab-webhook

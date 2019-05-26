@@ -15,12 +15,14 @@ module.exports = function ls(params, args) {
   let attachments = []
   try {
     const mapping = parse(fs.readFileSync(path))
-    text = `File mapping.${namespace}.${team_domain}.env List:`
     attachments = Object.keys(mapping)
       .map(key => ({
         type: 'mrkdwn',
         text: `*\`${key}\`*: ${mapping[key]}`
       }))
+
+    if (attachments.length) text = `File mapping.${namespace}.${team_domain}.env List:`
+    else text = `File mapping.${namespace}.${team_domain}.env does not hava any value:`
   } catch (error) {
     text = `File mapping.${namespace}.${team_domain}.env does not exist`
   }
