@@ -1,7 +1,8 @@
 const { send } = require('micro')
 
 const eventMap = {
-  'Merge Request Hook': 'merge-request'
+  'Merge Request Hook': 'merge-request',
+  'Note Hook': 'comments'
 }
 
 const { GITLAB_WEBHOOK_SECRET_TOKEN } = process.env
