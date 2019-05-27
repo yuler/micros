@@ -1,3 +1,5 @@
+const path = require('path')
+const { parse } = require('dotenv')
 const { json } = require('micro')
 const { slackNotifaction } = require('./api')
 
@@ -36,28 +38,29 @@ module.exports = async (req, res) => {
   return await slackNotifaction(SLACK_WEBHOOK, `#${name}`, text)
 }
 
-function getEnvKey(org, userIdOrUsername) {
+const filepath = filename => path.resolve(process.cwd(), '.env', filename)
+
+function getEnvKey(filepath, userIdOrUsername) {
   return `GITLAB_${org.toUpperCase()}_${userIdOrUsername.toString().toUpperCase()}`
 }
 
 function generateMention(org, userIdOrUsername) {
   let userId = userIdOrUsername
   let username
-  let key
+  let filename
+  let mapping
   if (typeof userIdOrUsername === 'string') {
-    userId = null
     username = userIdOrUsername
+    filename = `mapping.gitlab.${org}.env`
+    mapping = parse(fs.readFileSync(filepath(filename)))
+    userId = mapping[username]
+    if (!userId) return `<!channel>\nThe *${username}* Don't exist in \`${file}\`\nPlease set it\n`
   }
 
-  if (userId) {
-    key = getEnvKey(org, userId)
-    username = process.env[key]
-    if (!username) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it\n`
-  }
-
-  key = getEnvKey(org, username)
-  const mentionId = process.env[key]
-  if (!mentionId) return `<!channel>\nDon't exist *${key}* in environment\nPlease set it\n`
+  filename = `mapping.slack.${org}.env`
+  mapping = parse(fs.readFileSync(filepath(filename)))
+  const mentionId = mapping[userId]
+  if (!mentionId) return `<!channel>\nThe *${userId}* Don't exist in \`${file}\`\nPlease set it\n`
 
   return `<@${mentionId}>`
 }

@@ -4,13 +4,9 @@
 
 `process.env.SLACK_WEBHOOK`
 `process.env.GITLAB_WEBHOOK_SECRET_TOKEN`
-`process.env.GITLAB_${GITLAB_ORG}_${GITLAB_USER_ID}`
-`process.env.GITLAB_${GITLAB_ORG}_${GITLAB_USERNAME}`
 
+.env/mapping.gitlab.yhdx.env
+gitlab_username=gitlab_user_id
 
-`GITLAB_${GITLAB_ORG}_${USER_ID}`
-`GITLAB_${GITLAB_ORG}_${USERNAME}`
-
-
-userId => username
-username => mentionId
+.env/mapping.slack.yhdx.env
+gitlab_user_id=slack_member_id
