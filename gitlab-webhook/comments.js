@@ -4,19 +4,35 @@ const { slackNotifaction } = require('./api')
 const { generateMention } = require('./util')
 
 module.exports = async (req, res) => {
-  const { user, project, repository, object_attributes } = await json(req)
+  const { user, project, repository, object_attributes, merge_request } = await json(req)
 
   const { username: operator } = user
   const { namespace, name } = project
   const { homepage } = repository
   const { author_id, note, noteable_type, url } = object_attributes
 
-  const action = noteable_type.replace(/(\w+)([A-Z])/g, '$1 $2').toUpperCase()
-  const mention = generateMention(namespace, author_id)
-  const title = object_attributes[action] ? `*${object_attributes[action].title}*` : ''
+  const action = noteable_type.replace(/(\w+)([A-Z])/g, '$1_$2').toLowerCase()
+
+  let mention
+  let title
+  let iid
+  switch (action) {
+    case 'merge_request':
+      mention = author_id === merge_request.author_id
+        ? generateMention(namespace, merge_request.assignee_id)
+        : author_id === merge_request.assignee_id
+          ? generateMention(namespace, merge_request.author_id)
+          : [generateMention(namespace, merge_request.assignee_id), generateMention(namespace, merge_request.author_id)].join('\n')
+      title = `*${merge_request.title}*`
+      iid = merge_request.iid
+      break
+    default:
+      break
+  }
+
   const text = [
     mention,
-    `${generateMention(namespace, operator)}(${operator}) <${url}|commented on \`${}\` !${iid}> in <${homepage}|${namespace}/${name}>`,
+    `${generateMention(namespace, operator)}(${operator}) <${url}|commented on \`${action}\` !${iid}> in <${homepage}|${namespace}/${name}>`,
     title
   ].join('\n')
 
