@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 const { parse } = require('dotenv')
 const { json } = require('micro')
 const { slackNotifaction } = require('./api')
