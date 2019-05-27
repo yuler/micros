@@ -16,16 +16,19 @@ module.exports = async (req, res) => {
 
   // mention assignee or author user
   let mention
-  // action is open|repone|update, format description, is contains mention?
+  // action is open|repone|update
   let descriptionFormated = description
-  if (['open', 'reopen', 'update'].includes(action) && /@[\w]+/g.test(description)) {
+  if (['open', 'reopen', 'update'].includes(action)) {
     mention = generateMention(namespace, assignee_id)
-    descriptionFormated = description
-      .replace(/@all/g, '<!channel>($1)')
-      .replace(/@([\w]+)/g, function(origin, username) {
-        return `${generateMention(namespace, username)}(${origin})`
-      }
-    )
+    // format description, is contains mention?
+    if (/@[\w]+/g.test(description)) {
+      descriptionFormated = description
+        .replace(/@all/g, '<!channel>($1)')
+        .replace(/@([\w]+)/g, function(origin, username) {
+          return `${generateMention(namespace, username)}(${origin})`
+        }
+      )
+    }
   } else {
     mention = generateMention(namespace, author_id)
   }
