@@ -14,11 +14,10 @@ module.exports = function ls(params, args) {
   const pairs = []
   for (let i = 0; i < _.length; i++) {
     if (_[i].includes('=')) {
-      pairs.push(..._.split('=', 2))
+      pairs.push(_[i].split('=', 2))
       continue
     }
-    pairs.push(_[i])
-    pairs.push(_[++i])
+    pairs.push([_[i], _[++i]])
   }
 
   Promise.all(pairs.map(async pair => {

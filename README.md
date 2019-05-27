@@ -24,5 +24,7 @@ services:
       - ./slack-webhook.env
       - ./gitlab-webhook-secret-token.env
       - ./gitlab-slack-user-map.env
+    volumes:
+      - .env:/src/.env
 
 ```
