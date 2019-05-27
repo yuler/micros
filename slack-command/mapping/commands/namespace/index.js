@@ -1,6 +1,6 @@
 const arg = require('arg')
 const subcommandMap = {
-  default: 'set',
+  default: 'ls',
   ls: 'ls',
   set: 'set',
   rm: 'rm'
@@ -34,7 +34,7 @@ const help = namespace =>
 
     $ mapping ${namespace} set a b c d
 
-    or 
+    or
 
     $ mapping ${namespace} set a b c=d
 
