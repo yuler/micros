@@ -41,7 +41,7 @@ module.exports = function set(params, args) {
     }))
   if (attachments.length) text = `File mapping.${namespace}.${team_domain}.env List:`
   else text = `File mapping.${namespace}.${team_domain}.env does not hava any value`
-    
+
   notice(response_url, text, attachments)
 
   return `\`${params.command} ${params.text}\` command received`

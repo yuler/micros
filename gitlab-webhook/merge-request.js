@@ -40,10 +40,6 @@ module.exports = async (req, res) => {
 
 const filepath = filename => path.resolve(process.cwd(), '.env', filename)
 
-function getEnvKey(filepath, userIdOrUsername) {
-  return `GITLAB_${org.toUpperCase()}_${userIdOrUsername.toString().toUpperCase()}`
-}
-
 function generateMention(org, userIdOrUsername) {
   let userId = userIdOrUsername
   let username
