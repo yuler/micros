@@ -14,13 +14,13 @@ exports.generateMention = function(org, userIdOrUsername) {
     filename = `mapping.gitlab.${org}.env`
     mapping = parse(fs.readFileSync(filepath(filename)))
     userId = mapping[username]
-    if (!userId) return `<!channel>\nThe *${username}* Don't exist in \`${file}\`\nPlease set it\n`
+    if (!userId) return `<!channel>\nThe *${username}* Don't exist in \`${filename}\`\nPlease set it\n`
   }
 
   filename = `mapping.slack.${org}.env`
   mapping = parse(fs.readFileSync(filepath(filename)))
   const mentionId = mapping[userId]
-  if (!mentionId) return `<!channel>\nThe *${userId}* Don't exist in \`${file}\`\nPlease set it\n`
+  if (!mentionId) return `<!channel>\nThe *${userId}* Don't exist in \`${filename}\`\nPlease set it\n`
 
   return `<@${mentionId}>`
 }
