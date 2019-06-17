@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
       iid = merge_request.iid
       break
     default:
-      break
+      return
   }
 
   const text = [
