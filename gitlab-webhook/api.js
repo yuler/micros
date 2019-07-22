@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
-const { SLACK_WEBHOOK } = process.env
 
-exports.slackNotifaction = function(channel, text, attachments = []) {
+exports.slackNotifaction = function(org, channel, text, attachments = []) {
+  const SLACK_WEBHOOK = process.env[`${org}_slack_webhook`.toUpperCase()]
   return fetch(SLACK_WEBHOOK, {
     method: 'POST',
     headers: {

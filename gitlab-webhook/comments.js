@@ -50,5 +50,5 @@ module.exports = async (req, res) => {
     text: `${noteFormated}`
   }]
 
-  return await slackNotifaction(`#${name}`, text, attachments)
+  return await slackNotifaction(namespace, `#${name}`, text, attachments)
 }
