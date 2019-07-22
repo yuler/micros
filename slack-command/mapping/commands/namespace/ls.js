@@ -8,7 +8,7 @@ module.exports = function ls(params, args) {
   const { team_domain, response_url } = params
   const namespace = args._[0]
 
-  const filename = `mapping.${namespace}.${team_domain}.env`
+  const filename = `mapping.${namespace}.${team_domain.toLowerCase()}.env`
   const path = filepath(filename)
 
   let text
@@ -27,7 +27,7 @@ module.exports = function ls(params, args) {
     text = `File mapping.${namespace}.${team_domain}.env does not exist`
   }
 
-  notice(response_url, text, attachments)  
+  notice(response_url, text, attachments)
 
   return `\`${params.command} ${params.text}\` command received`
 }

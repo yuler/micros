@@ -14,7 +14,7 @@ module.exports = function set(params, args) {
     return `Must need a <key>`
   }
 
-  const filename = `mapping.${namespace}.${team_domain}.env`
+  const filename = `mapping.${namespace}.${team_domain.toLowerCase()}.env`
   const path = filepath(filename)
   let mapping = {}
   if (fs.existsSync(path)) {

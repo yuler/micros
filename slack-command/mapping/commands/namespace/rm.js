@@ -14,7 +14,7 @@ module.exports = function rm(params, args) {
     return `Miss <key> argument`
   }
 
-  const filename = `mapping.${namespace}.${team_domain}.env`
+  const filename = `mapping.${namespace}.${team_domain.toLowerCase()}.env`
   const path = filepath(filename)
   let mapping = {}
   if (fs.existsSync(path)) {
@@ -36,7 +36,7 @@ module.exports = function rm(params, args) {
     }))
   if (attachments.length) text = `File mapping.${namespace}.${team_domain}.env List:`
   else text = `File mapping.${namespace}.${team_domain}.env does not hava any value`
-    
+
   notice(response_url, text, attachments)
 
   return `\`${params.command} ${params.text}\` command received`
