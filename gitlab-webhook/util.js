@@ -5,6 +5,7 @@ const { parse } = require('dotenv')
 const filepath = filename => path.resolve(process.cwd(), '.env', filename)
 
 exports.generateMention = function(org, userIdOrUsername) {
+  org = org.toLowerCase()
   let userId = userIdOrUsername
   let username
   let filename
