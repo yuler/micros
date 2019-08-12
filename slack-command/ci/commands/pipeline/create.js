@@ -10,7 +10,7 @@ module.exports = async function add(params, args) {
 
   const variables = {}
   ;(args['--variable'] || []).map(str => {
-    const [key, value] = str.split(':')
+    const [key, value] = str.split('=')
     if (key && value) {
       variables[key] = value
     }
