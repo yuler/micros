@@ -35,11 +35,11 @@ const help = () =>
 
     - Create a pipeline
 
-    $ ci pipline create master description -v APP_ENV:testing --variable=APP_VERSION:1.0.0
+    $ ci pipline create master description -v APP_ENV=testing --variable=APP_VERSION:1.0.0
 
     or
 
-    $ ci pipline add master description -e APP_ENV:testing --env=APP_VERSION:1.0.0
+    $ ci pipline add master description -e APP_ENV=testing --env=APP_VERSION:1.0.0
 
 `
 

@@ -12,7 +12,8 @@ module.exports = async function add(params, args) {
   ;(args['--variable'] || []).map(str => {
     const [key, value] = str.split('=')
     if (key && value) {
-      variables[key] = value
+      // remove <url> => url
+      variables[key] = value.replace(/^<|>$/g, '')
     }
   })
 
