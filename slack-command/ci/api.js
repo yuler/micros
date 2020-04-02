@@ -17,9 +17,19 @@ exports.pipelineList = function(id) {
 }
 
 exports.pipelineCreate = function(id, ref, variables) {
-  return fetch(`${apiRoot}/projects/${id}/pipeline?ref=${ref}&${serialize(variables, 'variables')}`, {
+  return fetch(`${apiRoot}/projects/${id}/pipeline`, {
     method: 'POST',
-    headers
+    headers: { 
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+    body: JSON.stringify({
+      ref,
+      variables: Object.keys(variables)
+        .map(key => {
+          return { key, value: variables[key]}
+        })
+    })
   })
 }
 
